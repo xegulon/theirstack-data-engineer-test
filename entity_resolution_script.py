@@ -232,7 +232,6 @@ WITH aggregated_data AS (
         groupArrayDistinct(linkedin_slug) as possible_linkedin_slugs,
         count(*) as count
     FROM company_clusters
-    WHERE cluster_id IS NOT NULL
     GROUP BY cluster_id
 )
 SELECT
