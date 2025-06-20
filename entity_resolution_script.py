@@ -218,18 +218,28 @@ client.command(create_table_query)
 client.command("TRUNCATE TABLE IF EXISTS company_final")
 
 final_table_query = """
+WITH aggregated_data AS (
+    SELECT 
+        cluster_id,
+        groupArrayDistinct(name) as possible_names,
+        groupArrayDistinct(domain) as possible_domains,
+        groupArrayDistinct(host) as possible_hostnames,
+        groupArrayDistinct(linkedin_slug) as possible_linkedin_slugs
+    FROM company_clusters
+    GROUP BY cluster_id
+)
 INSERT INTO company_final
 SELECT 
-    arrayElement(arraySort(x -> -length(x), groupArray(name)), 1) as name,
-    groupArrayDistinct(name) as possible_names,
-    arrayElement(arraySort(x -> -length(x), groupArray(domain)), 1) as domain,
-    arrayFilter(x -> x != '', groupArrayDistinct(domain)) as possible_domains,
-    arrayElement(arraySort(x -> -length(x), groupArray(linkedin_slug)), 1) as linkedin_slug,
-    arrayFilter(x -> x != '', groupArrayDistinct(host)) as possible_hostnames
-FROM company_clusters
-GROUP BY cluster_id
+    possible_names[1] as name,
+    possible_names,
+    possible_domains[1] as domain,
+    possible_domains,
+    possible_linkedin_slugs[1] as linkedin_slug,
+    possible_hostnames
+FROM aggregated_data
 """
 
 client.command(final_table_query)
+
 
 
