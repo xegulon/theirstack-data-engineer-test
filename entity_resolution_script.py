@@ -204,23 +204,24 @@ print(f"\nResults saved to ClickHouse table: {cluster_table_name}")
 drop_final_table_query = "DROP TABLE IF EXISTS company_final"
 client.command(drop_final_table_query)
 
-create_table_query = f"""
+create_table_query = """
 CREATE TABLE IF NOT EXISTS company_final (
+    cluster_id UInt32,
     name String,
     possible_names Array(String),
     domain String,
     possible_domains Array(String),
     linkedin_slug String,
+    possible_linkedin_slugs Array(String),
     possible_hostnames Array(String)
 ) ENGINE = MergeTree()
-ORDER BY (name)
+ORDER BY (cluster_id)
 """
 
 client.command(create_table_query)
 
-client.command("TRUNCATE TABLE IF EXISTS company_final")
-
 final_table_query = """
+INSERT INTO company_final
 WITH aggregated_data AS (
     SELECT 
         cluster_id,
@@ -229,9 +230,9 @@ WITH aggregated_data AS (
         groupArrayDistinct(host) as possible_hostnames,
         groupArrayDistinct(linkedin_slug) as possible_linkedin_slugs
     FROM company_clusters
+    WHERE cluster_id IS NOT NULL
     GROUP BY cluster_id
 )
-INSERT INTO company_final
 SELECT
     cluster_id,
     possible_names[1] as name,
@@ -239,11 +240,20 @@ SELECT
     possible_domains[1] as domain,
     possible_domains,
     possible_linkedin_slugs[1] as linkedin_slug,
+    possible_linkedin_slugs,
     possible_hostnames
 FROM aggregated_data
 """
 
 client.command(final_table_query)
+
+print("Final table created successfully!")
+print("Querying final results...")
+
+# Query and display some results
+final_results = client.query_df("SELECT * FROM company_final LIMIT 10")
+print(f"\n=== FINAL TABLE RESULTS (first 10 rows) ===")
+print(final_results.to_string(index=False))
 
 
 
