@@ -213,7 +213,8 @@ CREATE TABLE IF NOT EXISTS company_final (
     possible_domains Array(String),
     linkedin_slug String,
     possible_linkedin_slugs Array(String),
-    possible_hostnames Array(String)
+    possible_hostnames Array(String),
+    count UInt32
 ) ENGINE = MergeTree()
 ORDER BY (cluster_id)
 """
@@ -228,7 +229,8 @@ WITH aggregated_data AS (
         groupArrayDistinct(name) as possible_names,
         groupArrayDistinct(domain) as possible_domains,
         groupArrayDistinct(host) as possible_hostnames,
-        groupArrayDistinct(linkedin_slug) as possible_linkedin_slugs
+        groupArrayDistinct(linkedin_slug) as possible_linkedin_slugs,
+        count(*) as count
     FROM company_clusters
     WHERE cluster_id IS NOT NULL
     GROUP BY cluster_id
@@ -241,7 +243,8 @@ SELECT
     possible_domains,
     possible_linkedin_slugs[1] as linkedin_slug,
     possible_linkedin_slugs,
-    possible_hostnames
+    possible_hostnames,
+    count
 FROM aggregated_data
 """
 
