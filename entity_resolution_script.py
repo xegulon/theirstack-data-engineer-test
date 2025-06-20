@@ -75,7 +75,7 @@ deterministic_rules = [
 
 linker.training.estimate_probability_two_random_records_match(
     deterministic_rules,
-    recall=0.8,
+    recall=0.75,
 )
 
 linker.training.estimate_u_using_random_sampling(max_pairs=1e5)
@@ -89,7 +89,7 @@ pairwise_predictions = linker.inference.predict(threshold_match_weight=-3)
 
 
 clusters = linker.clustering.cluster_pairwise_predictions_at_threshold(
-    pairwise_predictions, 0.85
+    pairwise_predictions, 0.8
 )
 
 df_clusters = clusters.as_pandas_dataframe()
