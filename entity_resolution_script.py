@@ -85,7 +85,7 @@ linker.training.estimate_parameters_using_expectation_maximisation(block_on("nam
 
 print("Generating predictions...")
 
-pairwise_predictions = linker.inference.predict(threshold_match_weight=-3)
+pairwise_predictions = linker.inference.predict(threshold_match_weight=-4)
 
 
 clusters = linker.clustering.cluster_pairwise_predictions_at_threshold(
