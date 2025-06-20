@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_company_landing
+    description: "Cleaned and prepared data from company_landing table"
+    columns:
+      - name: unique_id
+        description: "Unique identifier for each record"
+        tests:
+          - unique
+          - not_null
+      - name: name
+        description: "Cleaned company name"
+        tests:
+          - not_null
+
+  - name: company_final
+    description: "Final table with resolved and aggregated companies"
+    columns:
+      - name: name
+        description: "Main company name"
+        tests:
+          - not_null
+      - name: possible_names
+        description: "Array of all possible names"
+        tests:
+          - not_null
+      - name: record_count
+        description: "Number of records in the cluster"
+        tests:
+          - not_null
+          - positive_values 

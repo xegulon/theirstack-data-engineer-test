@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Données brutes importées dans ClickHouse"
+    tables:
+      - name: company_landing
+        description: "Table principale contenant les données d'entreprises de différentes sources"
+        columns:
+          - name: data_provider_origin_id
+            description: "ID de la source de données"
+            tests:
+              - not_null
+          - name: data_provider_company_id
+            description: "ID de l'entreprise dans la source"
+            tests:
+              - not_null
+          - name: name
+            description: "Nom de l'entreprise"
+            tests:
+              - not_null
+          - name: domain
+            description: "Domaine de l'entreprise"
+          - name: linkedin_slug
+            description: "Slug LinkedIn de l'entreprise"
+          - name: info
+            description: "Informations JSON supplémentaires"
+          - name: created_at
+            description: "Date de création du record"
+          - name: updated_at
+            description: "Date de mise à jour du record"
+          - name: host
+            description: "Host de l'entreprise"
+          - name: url
+            description: "URL de l'entreprise" 

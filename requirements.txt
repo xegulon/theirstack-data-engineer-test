@@ -1,0 +1,9 @@
+dbt-core>=1.7.0
+dbt-clickhouse>=1.7.0
+clickhouse-connect>=0.7.0
+clickhouse-driver>=0.2.0
+pandas>=2.0.0
+numpy>=1.24.0 
+splink>=3.9.0
+splinkclickhouse>=0.1.0
+pandas-stubs
