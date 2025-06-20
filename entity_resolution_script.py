@@ -201,6 +201,9 @@ print(f"\nResults saved to ClickHouse table: {cluster_table_name}")
 
 # Create company_final table
 
+drop_final_table_query = "DROP TABLE IF EXISTS company_final"
+client.command(drop_final_table_query)
+
 create_table_query = f"""
 CREATE TABLE IF NOT EXISTS company_final (
     name String,
@@ -229,7 +232,8 @@ WITH aggregated_data AS (
     GROUP BY cluster_id
 )
 INSERT INTO company_final
-SELECT 
+SELECT
+    cluster_id,
     possible_names[1] as name,
     possible_names,
     possible_domains[1] as domain,
